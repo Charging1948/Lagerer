@@ -1,20 +1,20 @@
 package view;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import exceptions.AssetLoadException;
+import model.Position;
 import model.Product;
-import model.Warehouse;
 
-import java.awt.GridLayout;
+import javax.swing.*;
+
+import interfaces.WarehousePanelDelegate;
+
+import java.awt.*;
+import java.awt.event.*;
 
 public class WarehousePanel extends JPanel {
 
-    private static final String EMPTY_IMG = "assets/empty.png";
+    private static final String UNOCCUPIED_SPACE = "<html><body><h1>Empty</h1></body></html>";
     private JButton[][] grid;
+    private WarehousePanelDelegate delegate;
 
     public WarehousePanel(int height, int width) {
         this.setLayout(new GridLayout(height, width));
@@ -22,40 +22,40 @@ public class WarehousePanel extends JPanel {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                ImageIcon icon = new ImageIcon(EMPTY_IMG);
 
-                JButton button = new JButton(icon);
-                button.addActionListener(e -> {
-                    // Handle button press here
-                    // This could be something like warehouseController.storeProduct(i, j, product)
-                });
+                JButton button = new JButton();
+                button.setText(UNOCCUPIED_SPACE);
                 this.grid[i][j] = button;
                 this.add(button);
             }
         }
     }
 
-    public void updatePanel(Warehouse warehouse) {
+    public void setDelegate(WarehousePanelDelegate delegate) {
+        this.delegate = delegate;
+    }
+
+    // This method accepts a Product or null Object and x and y coordinates
+    public void updateGridSpot(Product product, Position position) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                Product[][] storage = warehouse.getStorage();
-                for (int i = 0; i < storage.length; i++) {
-                    for (int j = 0; j < storage[i].length; j++) {
-                        Product product = storage[i][j];
-                        JButton button = grid[i][j]; // Assuming buttons is a 2D array storing your JButtons
+                JButton button = grid[position.getX()][position.getY()];
 
-                        // If the slot has a product, update the button's icon
-                        try {
-                            if (product != null) {
-                                ImageIcon icon = product.getImageIcon(); // Get the product's icon
-                                button.setIcon(icon);
-                            } else {
-                                // If the slot is empty, reset the button's icon
-                                button.setIcon(Product.getEmptyImageIcon());
+                if (product != null) {
+                    button.setText(product.toHTMLString());
+                    button.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (delegate != null) {
+                                delegate.confirmRemoveProduct(product, position);
                             }
-                        } catch (AssetLoadException e) {
-                            e.printStackTrace();
                         }
+                    });
+
+                } else {
+                    button.setText(UNOCCUPIED_SPACE);
+                    for (ActionListener al : button.getActionListeners()) {
+                        button.removeActionListener(al);
                     }
                 }
                 revalidate();
@@ -63,5 +63,4 @@ public class WarehousePanel extends JPanel {
             }
         });
     }
-
 }

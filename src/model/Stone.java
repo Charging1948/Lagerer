@@ -50,11 +50,17 @@ public class Stone extends Product {
         return true;
     }
 
-    public String getAssetNameString() {
-        return getWithAssetBaseString("stone_" + this.stoneType.toString().toLowerCase() + ".png");
+    public String toShortString() {
+        return String.format("Stone:%s", this.weight.toString());
+    }
+    
+    @Override
+    public String toString() {
+        String lsp = System.lineSeparator();
+        return String.format("Stone:%s %n %s %n", lsp, this.stoneType, lsp, this.weight);
     }
 
-    public String getAssetTypeString() {
-        return getWithAssetBaseString(Product.TYPE_BASE + this.weight.toString().toLowerCase() + ".png");
+    public String toHTMLString() {
+        return "<html><body><h1>Stone</h1><br>" + this.stoneType + "<br>" + this.weight + "</body></html>";
     }
 }

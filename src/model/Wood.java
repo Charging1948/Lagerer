@@ -38,15 +38,21 @@ public class Wood extends Product {
         this.shape = shape;
     }
 
-    public String getAssetNameString() {
-        return getWithAssetBaseString("wood_" + this.shape.toString().toLowerCase() + ".png");
-    }
-
-    public String getAssetTypeString() {
-        return getWithAssetBaseString(Product.TYPE_BASE + this.type.toString().toLowerCase() + ".png");
-    }
-
     public boolean isValidPlacement(int x, int y) {
         return true;
+    }
+
+    public String toShortString() {
+        return String.format("Wood:%s", this.shape.toString());
+    }
+
+    @Override
+    public String toString() {
+        String lsp = System.lineSeparator();
+        return String.format("Wood:%s %n %s %n", lsp, this.shape, lsp, this.type);
+    }
+
+    public String toHTMLString() {
+        return "<html><body><h1>Wood</h1><br>" + this.shape + "<br>" + this.type + "</body></html>";
     }
 }

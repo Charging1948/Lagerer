@@ -3,12 +3,9 @@ import java.awt.*;
 
 import controller.*;
 import exceptions.*;
-import model.Paper;
-import model.Stone;
-import model.Paper.Color;
-import model.Paper.Size;
-import model.Stone.StoneType;
-import model.Stone.Weight;
+import model.*;
+import model.Stone.*;
+import model.Paper.*;
 import view.*;
 
 public class Start {
@@ -24,26 +21,29 @@ public class Start {
 
         // Create controllers
         // ProductController productController = new ProductController();
-        // OrderController orderController = new OrderController();
-        WarehouseController warehouseController = new WarehouseController();
+        AppController appController = new AppController();
 
-        // Create views
-        // ProductPanel productPanel = new ProductPanel(productController);
-        BalancePanel balancePanel = new BalancePanel();
+        // Get controllers
+        WarehouseController warehouseController = appController.getWarehouseController();
+        OrderController orderController = appController.getOrderController();
+        BalanceController balanceController = appController.getBalanceController();
+        StatusController statusController = appController.getStatusController();
 
         try {
-            warehouseController.storeProduct(new Stone(StoneType.GRANITE, Weight.LIGHT), 0, 0);
-            warehouseController.storeProduct(new Stone(StoneType.SANDSTONE, Weight.HEAVY), 1, 0);
-            warehouseController.storeProduct(new Paper(Color.BLUE, Size.A5), 2, 0);
+            appController.getWarehouseController().storeProduct(new Stone(StoneType.GRANITE, Weight.LIGHT), new Position(0,0));
+            appController.getWarehouseController().storeProduct(new Stone(StoneType.SANDSTONE, Weight.HEAVY), new Position(1,0));
+            appController.getWarehouseController().storeProduct(new Paper(Paper.Color.BLUE, Size.A5), new Position(2,0));
+
         } catch (StorageException e) {
             System.out.println(e.getMessage());
         }
 
         // Add views to main frame
         MainFrame mainFrame = new MainFrame();
-        mainFrame.setLayout(new GridLayout(1, 3));
-        mainFrame.add(warehouseController.getWarehousePanel());
-        mainFrame.add(balancePanel);
+        mainFrame.add(warehouseController.getWarehousePanel(), BorderLayout.CENTER);
+        mainFrame.add(orderController.getOrderPanel(), BorderLayout.EAST);
+        mainFrame.add(balanceController.getBalancePanel(), BorderLayout.WEST);
+        mainFrame.add(statusController.getStatusPanel(), BorderLayout.SOUTH);
 
         // Make main frame visible
         mainFrame.setVisible(true);

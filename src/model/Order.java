@@ -2,9 +2,9 @@ package model;
 
 public class Order {
     private Product product;
-    private double reward;
+    private int reward;
 
-    public Order(Product product, double reward) {
+    public Order(Product product, int reward) {
         this.product = product;
         this.reward = reward;
     }
@@ -17,11 +17,11 @@ public class Order {
         this.product = product;
     }
 
-    public double getReward() {
+    public int getReward() {
         return this.reward;
     }
 
-    public void setReward(double reward) {
+    public void setReward(int reward) {
         this.reward = reward;
     }
 }
