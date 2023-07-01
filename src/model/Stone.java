@@ -41,10 +41,10 @@ public class Stone extends Product {
     }
 
     public boolean isValidPlacement(int x, int y) throws InvalidProductPlacementException {
-        if (this.weight == Weight.HEAVY && y != 0) {
+        if (this.weight == Weight.HEAVY && y != (Warehouse.getHeight() - 1)) {
             throw new InvalidProductPlacementException("Heavy stones can only be stored on the ground floor");
         }
-        if (this.weight == Weight.MEDIUM && y == Warehouse.getHeight() - 1) {
+        if (this.weight == Weight.MEDIUM && y == 1) {
             throw new InvalidProductPlacementException("Medium stones cannot be stored on the top floor");
         }
         return true;

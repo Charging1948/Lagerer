@@ -1,30 +1,28 @@
 package controller;
 
-import java.awt.Component;
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.beans.PropertyChangeListener;
 
 import model.BalanceChange;
+import model.BalanceChangeList;
 import model.Order;
-import model.Product;
 import view.BalancePanel;
 
-public class BalanceController implements IController {
+public class BalanceController implements PropertyChangeListener {
     private int balance;
-    private List<BalanceChange> balanceChangeList;
+    private BalanceChangeList balanceChangeList;
     private BalancePanel balancePanel;
 
     public BalanceController() {
         this.balance = 0;
-        this.balanceChangeList = new ArrayList<BalanceChange>();
-        this.balancePanel = new BalancePanel();
+        this.balanceChangeList = new BalanceChangeList();
+        this.balanceChangeList.addPropertyChangeListener(this);
+        this.balancePanel = new BalancePanel(this.balanceChangeList.getBalanceChangeList());
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'propertyChange'");
+        
     }
 
     public void updateBalance(Order order, boolean successfulOrder) {
@@ -39,12 +37,9 @@ public class BalanceController implements IController {
         this.balanceChangeList.add(balanceChange);
 
         this.balancePanel.setBalance(this.balance);
-        this.balancePanel.setBalanceChangeList(this.balanceChangeList);
     }
 
     public BalancePanel getBalancePanel() {
         return balancePanel;
     }
-
-
 }

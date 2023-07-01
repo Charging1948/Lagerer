@@ -22,4 +22,12 @@ public class BalanceChange {
     public boolean isFromSuccessfulOrder() {
         return this.fromSuccessfulOrder;
     }
+
+    public Object toHTMLString() {
+        if (this.fromSuccessfulOrder) {
+            return "<html><body><h3>+" + this.amount + " from " + this.order.getProduct().toShortString() + "</h3></body></html>";
+        } else {
+            return "<html><body><h3>-" + this.amount + " from " + this.order.getProduct().toShortString() + "</h3></body></html>";
+        }
+    }
 }

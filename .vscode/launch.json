@@ -7,11 +7,5 @@
             "mainClass": "Start",
             "projectName": "Lagerer_197add65"
         },
-        {
-            "type": "java",
-            "name": "Launch Java Program",
-            "request": "launch",
-            "mainClass": "${file}"
-        }
     ]
 }

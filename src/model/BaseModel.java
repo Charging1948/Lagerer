@@ -3,7 +3,7 @@ package model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public abstract class BaseModel implements PropertyChangeListener{
+public abstract class BaseModel {
     private PropertyChangeSupport pcs; 
     public BaseModel() {
         this.pcs = new PropertyChangeSupport(this);

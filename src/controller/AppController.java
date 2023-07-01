@@ -1,12 +1,13 @@
 package controller;
 
 import interfaces.OrderControllerDelegate;
+import interfaces.StatusDelegate;
 import interfaces.WarehouseControllerDelegate;
 import model.Order;
 import model.Position;
 import model.Product;
 
-public class AppController implements WarehouseControllerDelegate, OrderControllerDelegate {
+public class AppController implements WarehouseControllerDelegate, OrderControllerDelegate, StatusDelegate {
 
     private WarehouseController warehouseController;
     private OrderController orderController;
@@ -19,6 +20,7 @@ public class AppController implements WarehouseControllerDelegate, OrderControll
 
         orderController = new OrderController();
         this.orderController.setDelegate(this);
+        this.orderController.setStatusDelegate(this);
 
         balanceController = new BalanceController();
         statusController = new StatusController();
@@ -40,32 +42,57 @@ public class AppController implements WarehouseControllerDelegate, OrderControll
         return this.statusController;
     }
 
+    @Override
+    public void setStatus(String status) {
+        statusController.setStatus(status);
+    }
 
+    @Override
+    public void productStored(Product product, Position position) {
+        Order order = orderController.getOrders().getOrderByProduct(product);
+        if (order != null) {
+            balanceController.updateBalance(order, true);
+            orderController.markOrderAsFulfilled(order);
+            warehouseController.resetWarehouseHighlighting();
+        }
+        // else {
+        //     balanceController.updateBalance(order, false);
+        // }
+    }
 
     @Override
     public void productRemoved(Product product, Position position) {
         Order order = orderController.getOrders().getOrderByProduct(product);
-        if (orderController.hasActiveOrderForProduct(product)) {
-            balanceController.updateBalance(product, true);
-            orderController.markOrderAsFulfilled(product);
+        if (order != null) {
+            balanceController.updateBalance(order, true);
+            orderController.markOrderAsFulfilled(order);
         } else {
-            balanceController.updateBalance(product, false);
+            balanceController.updateBalance(order, false);
         }
     }
 
     @Override
     public void orderAdded(Order order) {
         statusController.setStatus("Order added");
+        System.out.println("Order added");
     }
 
     @Override
     public void orderAborted(Order order) {
-        
+        statusController.setStatus("Order aborted");
+        System.out.println("Order aborted");
     }
 
     @Override
     public void orderFulfilled(Order order) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'orderFulfilled'");
+        statusController.setStatus("Order fulfilled");
+        System.out.println("Order fulfilled");
+    }
+
+    @Override
+    public void orderSelected(Order order) {
+        System.out.println("Order selected");
+        warehouseController.handleOrder(order);
+        statusController.setStatus("Currently handling order for: " + order.getProduct().toString());
     }
 }

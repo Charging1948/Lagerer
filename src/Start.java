@@ -2,10 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 
 import controller.*;
-import exceptions.*;
-import model.*;
-import model.Stone.*;
-import model.Paper.*;
 import view.*;
 
 public class Start {
@@ -28,15 +24,6 @@ public class Start {
         OrderController orderController = appController.getOrderController();
         BalanceController balanceController = appController.getBalanceController();
         StatusController statusController = appController.getStatusController();
-
-        try {
-            appController.getWarehouseController().storeProduct(new Stone(StoneType.GRANITE, Weight.LIGHT), new Position(0,0));
-            appController.getWarehouseController().storeProduct(new Stone(StoneType.SANDSTONE, Weight.HEAVY), new Position(1,0));
-            appController.getWarehouseController().storeProduct(new Paper(Paper.Color.BLUE, Size.A5), new Position(2,0));
-
-        } catch (StorageException e) {
-            System.out.println(e.getMessage());
-        }
 
         // Add views to main frame
         MainFrame mainFrame = new MainFrame();

@@ -2,18 +2,16 @@ package controller;
 
 import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JOptionPane;
 
 import exceptions.StorageException;
-import model.Position;
-import model.Product;
-import model.Warehouse;
+import model.*;
 import view.WarehousePanel;
-import interfaces.WarehouseControllerDelegate;
-import interfaces.WarehousePanelDelegate;
+import interfaces.*;
 
-public class WarehouseController implements IController, WarehousePanelDelegate {
+public class WarehouseController implements PropertyChangeListener, WarehousePanelDelegate {
     private Warehouse warehouse;
     private WarehousePanel warehousePanel;
     private WarehouseControllerDelegate delegate;
@@ -62,6 +60,24 @@ public class WarehouseController implements IController, WarehousePanelDelegate 
         Position position = Warehouse.getPositionFromPropertyChangeName(evt.getPropertyName());
 
         this.warehousePanel.updateGridSpot(product, position);
+
+        if(this.delegate != null) {
+            switch(Warehouse.getMethodFromPropertyChangeName(evt.getPropertyName())) {
+                case STORE -> this.delegate.productStored(product, position);
+                case REMOVE -> this.delegate.productRemoved(product, position);
+            }
+        } else {
+            System.out.println("Delegate is null");
+        }
+    }
+
+    @Override
+    public void placeProduct(Product product, Position position) {
+        try {
+            this.storeProduct(product, position);
+        } catch (StorageException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
@@ -78,4 +94,19 @@ public class WarehouseController implements IController, WarehousePanelDelegate 
         }
     }
 
+    public void handleOrder(Order order) {
+        // Use lambda switch expression to handle order depending on order type
+        switch (order.getType()) {
+            case INBOUND:
+                this.warehousePanel.highlightEmptyLocations(order.getProduct());
+                break;
+            case OUTBOUND:
+                this.warehousePanel.highlightMatchingProductLocations(order.getProduct());
+                break;
+        }
+    }
+
+    public void resetWarehouseHighlighting() {
+        this.warehousePanel.removeHighlights();
+    }
 }

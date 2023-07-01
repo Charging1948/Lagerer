@@ -1,7 +1,5 @@
 package model;
 
-import java.beans.PropertyChangeEvent;
-
 import exceptions.InvalidProductPlacementException;
 import exceptions.WarehouseFullException;
 
@@ -133,12 +131,8 @@ public class Warehouse extends BaseModel {
         return new Position(x, y);
     }
 
-    /*
-     * Do not use this method. It is only here to satisfy the interface.
-     * Warning: This method does nothing!
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        // Not used, but required by interface
+    public static Methods getMethodFromPropertyChangeName(String propertyName) {
+        String[] split = propertyName.split("_");
+        return Methods.valueOf(split[1].toUpperCase());
     }
 }
