@@ -82,6 +82,7 @@ public class AppController implements WarehouseControllerDelegate, OrderControll
     public void orderAborted(Order order) {
 
         balanceController.trashPenalty(order);
+        warehouseController.resetWarehouseHighlighting();
         statusController.setStatus("Order aborted");
     }
 
