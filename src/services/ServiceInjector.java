@@ -9,7 +9,7 @@ public class ServiceInjector {
     private SidePanel sidePanel;
 
     public ServiceInjector() {
-        this.mainFrame = new MainFrame("Title");
+        this.mainFrame = new MainFrame("Lagerer");
         this.sidePanel = new SidePanel();
     }
 
