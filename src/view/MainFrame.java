@@ -5,8 +5,8 @@ import java.awt.BorderLayout;
 
 public class MainFrame extends JFrame {
 
-    public MainFrame() {
-        setTitle("Lageristen-Spiel");
+    public MainFrame(String title) {
+        setTitle(title);
         setSize(1440, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());

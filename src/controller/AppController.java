@@ -49,49 +49,49 @@ public class AppController implements WarehouseControllerDelegate, OrderControll
 
     @Override
     public void productStored(Product product, Position position) {
-        Order order = orderController.getOrders().getOrderByProduct(product);
+        Order order = orderController.getOrderList().getOrderByProduct(product);
         if (order != null) {
             balanceController.updateBalance(order, true);
             orderController.markOrderAsFulfilled(order);
             warehouseController.resetWarehouseHighlighting();
         }
-        // else {
-        //     balanceController.updateBalance(order, false);
-        // }
     }
 
     @Override
-    public void productRemoved(Product product, Position position) {
-        Order order = orderController.getOrders().getOrderByProduct(product);
+    public void productSentOut(Product product, Position position) {
+        Order order = orderController.getOrderList().getOrderByProduct(product);
         if (order != null) {
             balanceController.updateBalance(order, true);
             orderController.markOrderAsFulfilled(order);
-        } else {
-            balanceController.updateBalance(order, false);
+            warehouseController.resetWarehouseHighlighting();
         }
+    }
+
+    @Override
+    public void productRemoved(Product product) {
+        balanceController.trashPenalty(product);
+        warehouseController.resetWarehouseHighlighting();
     }
 
     @Override
     public void orderAdded(Order order) {
         statusController.setStatus("Order added");
-        System.out.println("Order added");
     }
 
     @Override
     public void orderAborted(Order order) {
+
+        balanceController.trashPenalty(order);
         statusController.setStatus("Order aborted");
-        System.out.println("Order aborted");
     }
 
     @Override
     public void orderFulfilled(Order order) {
         statusController.setStatus("Order fulfilled");
-        System.out.println("Order fulfilled");
     }
 
     @Override
     public void orderSelected(Order order) {
-        System.out.println("Order selected");
         warehouseController.handleOrder(order);
         statusController.setStatus("Currently handling order for: " + order.getProduct().toString());
     }

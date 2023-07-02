@@ -8,7 +8,6 @@ import interfaces.OrderPanelDelegate;
 import interfaces.StatusDelegate;
 import model.Order;
 import model.OrderList;
-import model.Product;
 import view.OrderPanel;
 
 public class OrderController implements PropertyChangeListener, OrderPanelDelegate {
@@ -27,7 +26,7 @@ public class OrderController implements PropertyChangeListener, OrderPanelDelega
 
     public OrderController() {
         this.orderList = new OrderList();
-        this.orderPanel = new OrderPanel();
+        this.orderPanel = new OrderPanel(this.orderList.getOrderDefaultListModel());
 
         this.orderList.addPropertyChangeListener(this);
         this.orderPanel.addPropertyChangeListener(this);
@@ -38,7 +37,6 @@ public class OrderController implements PropertyChangeListener, OrderPanelDelega
     public void addGeneratedOrder() {
         try {
             this.orderList.addGeneratedOrder();
-            this.orderPanel.fromOrderList(this.orderList.getOrders());
         } catch (ArrayIndexOutOfBoundsException e) {
             this.statusDelegate.setStatus("Cannot add more orders. Try fulfilling some first.");
         }
@@ -48,7 +46,7 @@ public class OrderController implements PropertyChangeListener, OrderPanelDelega
         this.orderList.add(order);
     }
 
-    public OrderList getOrders() {
+    public OrderList getOrderList() {
         return this.orderList;
     }
 
@@ -64,29 +62,19 @@ public class OrderController implements PropertyChangeListener, OrderPanelDelega
                 this.delegate.orderSelected(order);
             }
         }
-        switch (evt.getPropertyName()) {
-            case "order_selected":
-                Order order = (Order) evt.getNewValue();
-                if (order != null) {
-                    this.delegate.orderSelected(order);
-                }
-                break;
-            case "orderlist_remove":
-                this.orderPanel.fromOrderList(this.orderList.getOrders());
-                break;
-            default:
-                break;
-        }
-    }
-
-    public boolean hasActiveOrderForProduct(Product product) {
-        System.out.println("Checking for active order for product");
-        return false;
     }
 
     public void markOrderAsFulfilled(Order order) {
         this.orderList.remove(order);
         this.statusDelegate.setStatus("Order fulfilled");
         System.out.println("Order fulfilled");
+    }
+
+    @Override
+    public void trashSelectedOrder(Order selectedOrder) {
+        this.orderList.remove(selectedOrder);
+        this.statusDelegate.setStatus("Order trashed");
+        this.delegate.orderAborted(selectedOrder);
+        System.out.println("Order trashed");
     }
 }

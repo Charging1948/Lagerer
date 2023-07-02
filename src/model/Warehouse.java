@@ -14,7 +14,7 @@ public class Warehouse extends BaseModel {
      */
     public enum Methods {
         STORE,
-        REMOVE
+        REMOVE, SENDOUT
     }
 
     public Warehouse() {
@@ -66,6 +66,20 @@ public class Warehouse extends BaseModel {
 
         // Fire property change
         firePropertyChange(getStoragePropertyChangeName(Methods.REMOVE, position), oldProduct, null);
+    }
+
+    public void sendOutProduct(Position position) {
+        int x = position.getX();
+        int y = position.getY();
+
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
+            throw new IllegalArgumentException("Invalid storage position");
+        }
+        Product oldProduct = storage[x][y];
+        storage[x][y] = null;
+
+        // Fire property change
+        firePropertyChange(getStoragePropertyChangeName(Methods.SENDOUT, position), oldProduct, null);
     }
 
     /**
@@ -135,4 +149,5 @@ public class Warehouse extends BaseModel {
         String[] split = propertyName.split("_");
         return Methods.valueOf(split[1].toUpperCase());
     }
+
 }

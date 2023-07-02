@@ -1,8 +1,10 @@
 package model;
 
+import java.util.Objects;
+
 public class Paper extends Product {
-    private Color color;
-    private Size size;
+    private final Color color;
+    private final Size size;
     
     public enum Color {
         WHITE,
@@ -26,16 +28,8 @@ public class Paper extends Product {
         return this.color;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
     public Size getSize() {
         return this.size;
-    }
-
-    public void setSize(Size size) {
-        this.size = size;
     }
 
     public boolean isValidPlacement(int x, int y) {
@@ -43,7 +37,7 @@ public class Paper extends Product {
     }
 
     public String toShortString() {
-        return String.format("Paper:%s", this.color.toString());
+        return String.format("Paper: %s %s", this.color.toString(), this.size.toString());
     }
 
     @Override
@@ -53,6 +47,21 @@ public class Paper extends Product {
     }
 
     public String toHTMLString() {
-        return "<html><body><h1>Paper</h1><br>" + this.color + "<br>" + this.size + "</body></html>";
+        return "<html><body><h2>Paper</h2><br>" + this.color + "<br>" + this.size + "</body></html>";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Paper paper = (Paper) obj;
+        return color == paper.color && size == paper.size;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, size);
     }
 }

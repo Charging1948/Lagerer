@@ -1,7 +1,12 @@
-package model;
+package model.helpers;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import model.Order;
+import model.Paper;
+import model.Stone;
+import model.Wood;
 
 public class TypeMaps {
 

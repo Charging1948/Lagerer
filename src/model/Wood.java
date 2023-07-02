@@ -1,8 +1,10 @@
 package model;
 
+import java.util.Objects;
+
 public class Wood extends Product {
-    private Type type;
-    private Shape shape;
+    private final Type type;
+    private final Shape shape;
 
     public enum Type {
         OAK,
@@ -26,16 +28,8 @@ public class Wood extends Product {
         return this.type;
     }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
-
     public Shape getShape() {
         return this.shape;
-    }
-
-    public void setShape(Shape shape) {
-        this.shape = shape;
     }
 
     public boolean isValidPlacement(int x, int y) {
@@ -43,7 +37,7 @@ public class Wood extends Product {
     }
 
     public String toShortString() {
-        return String.format("Wood:%s", this.shape.toString());
+        return String.format("Wood: %s %s", this.shape.toString(), this.type.toString());
     }
 
     @Override
@@ -53,6 +47,21 @@ public class Wood extends Product {
     }
 
     public String toHTMLString() {
-        return "<html><body><h1>Wood</h1><br>" + this.shape + "<br>" + this.type + "</body></html>";
+        return "<html><body><h2>Wood</h2><br>" + this.shape + "<br>" + this.type + "</body></html>";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Wood wood = (Wood) obj;
+        return type == wood.type && shape == wood.shape;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, shape);
     }
 }

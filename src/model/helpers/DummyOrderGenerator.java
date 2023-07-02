@@ -1,9 +1,14 @@
-package model;
+package model.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import model.Order;
+import model.Paper;
+import model.Product;
+import model.Stone;
+import model.Wood;
 import model.Order.OrderType;
 
 public class DummyOrderGenerator {

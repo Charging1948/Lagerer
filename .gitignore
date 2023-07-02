@@ -8,4 +8,4 @@ devenv.local.nix
 
 # Build output
 bin/
-
+*.jar

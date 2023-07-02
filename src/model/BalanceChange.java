@@ -11,6 +11,11 @@ public class BalanceChange {
         this.fromSuccessfulOrder = fromSuccessfulOrder;
     }
 
+    public BalanceChange() {
+        this.amount = 300;
+        this.fromSuccessfulOrder = false;
+    }
+
     public int getAmount() {
         return this.amount;
     }
@@ -23,11 +28,28 @@ public class BalanceChange {
         return this.fromSuccessfulOrder;
     }
 
+    private String getVerb() {
+        String result = "";
+
+        if (this.isFromSuccessfulOrder()) {
+            result = switch (this.order.getType()) {
+                case INBOUND -> "storing ";
+                case OUTBOUND -> "sending out ";
+            };
+        } else {
+            result = "trashing ";
+        }
+
+        return result;
+    }
+
     public Object toHTMLString() {
         if (this.fromSuccessfulOrder) {
-            return "<html><body><h3>+" + this.amount + " from " + this.order.getProduct().toShortString() + "</h3></body></html>";
+            return "<html><body><h3>+" + this.amount + " from " + this.getVerb()
+                    + this.order.getProduct().toShortString() + "</h3></body></html>";
         } else {
-            return "<html><body><h3>-" + this.amount + " from " + this.order.getProduct().toShortString() + "</h3></body></html>";
+            return "<html><body><h3>-" + this.amount + " from " + this.getVerb()
+                    + this.order.getProduct().toShortString() + "</h3></body></html>";
         }
     }
 }

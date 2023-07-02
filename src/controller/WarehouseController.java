@@ -48,6 +48,10 @@ public class WarehouseController implements PropertyChangeListener, WarehousePan
         this.warehouse.removeProduct(position);
     }
 
+    public void sendOutProduct(Position position) {
+        this.warehouse.sendOutProduct(position);
+    }
+
     public void setDelegate(WarehousePanelDelegate delegate) {
         this.warehousePanel.setDelegate(delegate);
     }
@@ -64,7 +68,8 @@ public class WarehouseController implements PropertyChangeListener, WarehousePan
         if(this.delegate != null) {
             switch(Warehouse.getMethodFromPropertyChangeName(evt.getPropertyName())) {
                 case STORE -> this.delegate.productStored(product, position);
-                case REMOVE -> this.delegate.productRemoved(product, position);
+                case SENDOUT -> this.delegate.productSentOut((Product) evt.getOldValue(), position);
+                case REMOVE -> this.delegate.productRemoved((Product) evt.getOldValue());
             }
         } else {
             System.out.println("Delegate is null");
@@ -80,8 +85,14 @@ public class WarehouseController implements PropertyChangeListener, WarehousePan
         }
     }
 
+    
     @Override
-    public void confirmRemoveProduct(Product product, Position position) {
+    public void shipOutProduct(Product product, Position position) {
+        this.removeProduct(position);
+    }
+
+    @Override
+    public void confirmRemoveProduct(Position position) {
         try {
             int dialogResult = JOptionPane.showConfirmDialog(this.warehousePanel,
                     "Would You Like to Remove the Product?", "Warning",
